@@ -148,14 +148,16 @@
     var self = this;
 
     // Undelegate the global touch events in
-    self.element.off( 'touchstart' );
-    self.element.off( 'touchmove' );
-    self.element.off( 'touchend' );
+    self.element
+      .off( 'touchstart' )
+      .off( 'touchmove' )
+      .off( 'touchend' );
 
     // Delegate the touch handlers to the widget's element
-    self.element.on( 'touchstart', $.proxy( self, '_touchStart' ) );
-    self.element.on( 'touchmove', $.proxy( self, '_touchMove' ) );
-    self.element.on( 'touchend', $.proxy( self, '_touchEnd' ) );
+    self.element
+      .on( 'touchstart', $.proxy( self, '_touchStart' ) )
+      .on( 'touchmove', $.proxy( self, '_touchMove' ) )
+      .on( 'touchend', $.proxy( self, '_touchEnd' ) );
 
     // Call the original $.ui.mouse init method
     _mouseInit.call(self);
