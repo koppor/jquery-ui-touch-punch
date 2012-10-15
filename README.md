@@ -1,6 +1,8 @@
 # jQuery UI Touch Punch
 ## Touch Event Support for jQuery UI
 
+NOTE from Jonathan Cook: Updated the check for touch capability on line 14
+
 > **jQuery UI Touch Punch is a small hack that enables the use of touch events on sites using the jQuery UI user interface library.**
 
 _[Visit the official Touch Punch website](http://touchpunch.furf.com)._

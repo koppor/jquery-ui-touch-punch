@@ -11,7 +11,7 @@
 (function ($) {
 
   // Detect touch support
-  $.support.touch = 'ontouchend' in document;
+  $.support.touch = Modernizr ? Modernizr.touch : ('ontouchend' in document || 'createTouch' in document);
 
   // Ignore browsers without touch support
   if (!$.support.touch) {
