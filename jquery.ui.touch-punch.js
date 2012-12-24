@@ -14,7 +14,7 @@
   $.support.touch = 'ontouchend' in document;
 
   // Ignore browsers without touch support
-  if (!$.support.touch) {
+  if (!$.support.touch && !navigator.msPointerEnabled) {
     return;
   }
 
@@ -30,15 +30,15 @@
   function simulateMouseEvent (event, simulatedType) {
 
     // Ignore multi-touch events
-    if (event.originalEvent.touches.length > 1) {
+    if (event.originalEvent.touches && event.originalEvent.touches.length > 1) {
       return;
     }
 
     event.preventDefault();
 
-    var touch = event.originalEvent.changedTouches[0],
+    var touch = event.originalEvent.changedTouches ? event.originalEvent.changedTouches[0] : event,
         simulatedEvent = document.createEvent('MouseEvents');
-    
+
     // Initialize the simulated mouse event using the touch event's coordinates
     simulatedEvent.initMouseEvent(
       simulatedType,    // type
@@ -149,9 +149,12 @@
 
     // Delegate the touch handlers to the widget's element
     self.element
-      .bind('touchstart', $.proxy(self, '_touchStart'))
-      .bind('touchmove', $.proxy(self, '_touchMove'))
-      .bind('touchend', $.proxy(self, '_touchEnd'));
+      .bind(navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart', $.proxy(self, '_touchStart'))
+      .bind(navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove', $.proxy(self, '_touchMove'))
+      .bind(navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend', $.proxy(self, '_touchEnd'));
+
+    // Add -ms-touch-action: none for touch devices on IE10
+    self.element.css({msTouchAction: 'none'});
 
     // Call the original $.ui.mouse init method
     _mouseInit.call(self);
