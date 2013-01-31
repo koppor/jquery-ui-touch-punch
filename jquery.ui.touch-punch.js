@@ -18,8 +18,11 @@
     }
 }(function ($) {
 
+  var pointerEnabled = window.navigator.pointerEnabled
+    || window.navigator.msPointerEnabled;
+
   // Detect touch support
-  $.support.touch = 'ontouchend' in document;
+  $.support.touch = 'ontouchend' in document || pointerEnabled;
 
   // Ignore browsers without touch support
   if (!$.support.touch && !navigator.msPointerEnabled) {
@@ -38,32 +41,39 @@
   function simulateMouseEvent (event, simulatedType) {
 
     // Ignore multi-touch events
-    if (event.originalEvent.touches && event.originalEvent.touches.length > 1) {
+    if ((!pointerEnabled && event.originalEvent.touches && event.originalEvent.touches.length > 1) || (pointerEnabled && !event.isPrimary)) {
       return;
     }
 
     event.preventDefault();
 
-    var touch = event.originalEvent.changedTouches ? event.originalEvent.changedTouches[0] : event,
+	var evt;
+	if (pointerEnabled) {
+		event = event.originalEvent;
+	} else if (event.originalEvent.changedTouches) {
+		event = event.originalEvent.changedTouches[0];
+	} else {
+		evt = event;
+	}
         simulatedEvent = document.createEvent('MouseEvents');
 
     // Initialize the simulated mouse event using the touch event's coordinates
     simulatedEvent.initMouseEvent(
-      simulatedType,    // type
-      true,             // bubbles                    
-      true,             // cancelable                 
-      window,           // view                       
-      1,                // detail                     
-      touch.screenX,    // screenX                    
-      touch.screenY,    // screenY                    
-      touch.clientX,    // clientX                    
-      touch.clientY,    // clientY                    
-      false,            // ctrlKey                    
-      false,            // altKey                     
-      false,            // shiftKey                   
-      false,            // metaKey                    
-      0,                // button                     
-      null              // relatedTarget              
+      simulatedType,                  // type
+      true,                           // bubbles
+      true,                           // cancelable
+      window,                         // view
+      1,                              // detail
+      evt.screenX,                    // screenX
+      evt.screenY,                    // screenY
+      evt.clientX,                    // clientX
+      evt.clientY,                    // clientY
+      false,                          // ctrlKey
+      false,                          // altKey
+      false,                          // shiftKey
+      false,                          // metaKey
+      0,                              // button
+      null                            // relatedTarget
     );
 
     // Dispatch the simulated event to the target element
@@ -79,7 +89,7 @@
     var self = this;
 
     // Ignore the event if another widget is already being handled
-    if (touchHandled || !self._mouseCapture(event.originalEvent.changedTouches[0])) {
+    if (touchHandled || (!pointerEnabled && !self._mouseCapture(event.originalEvent.changedTouches[0]))) {
       return;
     }
 
@@ -156,13 +166,22 @@
     var self = this;
 
     // Delegate the touch handlers to the widget's element
-    self.element
+    if (pointerEnabled) {
+      self.element
+        .bind('pointerDown', $.proxy(self, '_touchStart'))
+        .bind('pointerMove', $.proxy(self, '_touchMove'))
+        .bind('pointerUp', $.proxy(self, '_touchEnd'))
+        .bind('MSPointerDown', $.proxy(self, '_touchStart'))
+        .bind('MSPointerMove', $.proxy(self, '_touchMove'))
+        .bind('MSPointerUp', $.proxy(self, '_touchEnd'));
+    } else {
+      self.element
       .bind(navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart', $.proxy(self, '_touchStart'))
       .bind(navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove', $.proxy(self, '_touchMove'))
       .bind(navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend', $.proxy(self, '_touchEnd'));
-
-    // Add -ms-touch-action: none for touch devices on IE10
-    self.element.css({msTouchAction: 'none'});
+      // Add -ms-touch-action: none for touch devices on IE10
+      self.element.css({msTouchAction: 'none'});
+    }
 
     // Call the original $.ui.mouse init method
     _mouseInit.call(self);
