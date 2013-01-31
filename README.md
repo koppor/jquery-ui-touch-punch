@@ -3,6 +3,8 @@
 
 > **jQuery UI Touch Punch is a small hack that enables the use of touch events on sites using the jQuery UI user interface library.**
 
+This version tries to merge as much updates as possible from other branches into the developers branch of furf. Currently, no minified version is provided.
+
 _[Visit the official Touch Punch website](http://touchpunch.furf.com)._
 
 Currently, [jQuery UI](http://jqueryui.com/) user interface library does not support the use of touch events in their widgets and interactions. This means that the slick UI you designed and tested in your desktop browser will fail on most, if not all, touch-enabled mobile devices, becuase jQuery UI listens to mouse events—mouseover, mousemove and mouseout—not touch events—touchstart, touchmove and touchend.
@@ -20,8 +22,8 @@ Just follow these simple steps to enable touch events in your jQuery UI app:
 1. Include jQuery and jQuery UI on your page.
 
     ```html
-    <script src="http://code.jquery.com/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js"></script>
+    <script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/ui/1.8.17/jquery-ui.min.js" type="text/javascript"></script>
     ```
 
 2. Include Touch Punch after jQuery UI and before its first use.
@@ -29,7 +31,7 @@ Just follow these simple steps to enable touch events in your jQuery UI app:
     Please note that if you are using jQuery UI's components, Touch Punch must be included after jquery.ui.mouse.js, as Touch Punch modifies its behavior.
 
     ```html
-    <script src="jquery.ui.touch-punch.min.js"></script>
+    <script src="jquery.ui.touch-punch.js" type="text/javascript"></script>
     ```
 
 3. There is no 3. Just use jQuery UI as expected and watch it work at the touch of a finger.
