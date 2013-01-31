@@ -22,7 +22,7 @@
     || window.navigator.msPointerEnabled;
 
   // Detect touch support
-  $.support.touch = 'ontouchend' in document || pointerEnabled;
+  $.support.touch = $.support.touch || 'ontouchend' in document || pointerEnabled;
 
   // Ignore browsers without touch support
   if (!$.support.touch && !navigator.msPointerEnabled) {
