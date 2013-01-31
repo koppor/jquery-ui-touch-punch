@@ -165,20 +165,26 @@
     
     var self = this;
 
+    // Undelegate the global touch events in
+    self.element
+      .off( 'touchstart' )
+      .off( 'touchmove' )
+      .off( 'touchend' );
+
     // Delegate the touch handlers to the widget's element
     if (pointerEnabled) {
       self.element
-        .bind('pointerDown', $.proxy(self, '_touchStart'))
-        .bind('pointerMove', $.proxy(self, '_touchMove'))
-        .bind('pointerUp', $.proxy(self, '_touchEnd'))
-        .bind('MSPointerDown', $.proxy(self, '_touchStart'))
-        .bind('MSPointerMove', $.proxy(self, '_touchMove'))
-        .bind('MSPointerUp', $.proxy(self, '_touchEnd'));
+        .on('pointerDown', $.proxy(self, '_touchStart'))
+        .on('pointerMove', $.proxy(self, '_touchMove'))
+        .on('pointerUp', $.proxy(self, '_touchEnd'))
+        .on('MSPointerDown', $.proxy(self, '_touchStart'))
+        .on('MSPointerMove', $.proxy(self, '_touchMove'))
+        .on('MSPointerUp', $.proxy(self, '_touchEnd'));
     } else {
       self.element
-      .bind(navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart', $.proxy(self, '_touchStart'))
-      .bind(navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove', $.proxy(self, '_touchMove'))
-      .bind(navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend', $.proxy(self, '_touchEnd'));
+      .on(navigator.msPointerEnabled ? 'MSPointerDown' : 'touchstart', $.proxy(self, '_touchStart'))
+      .on(navigator.msPointerEnabled ? 'MSPointerMove' : 'touchmove', $.proxy(self, '_touchMove'))
+      .on(navigator.msPointerEnabled ? 'MSPointerUp' : 'touchend', $.proxy(self, '_touchEnd'));
       // Add -ms-touch-action: none for touch devices on IE10
       self.element.css({msTouchAction: 'none'});
     }
