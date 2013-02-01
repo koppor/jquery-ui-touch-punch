@@ -49,9 +49,9 @@
 
 	var evt;
 	if (pointerEnabled) {
-		event = event.originalEvent;
+		evt = event.originalEvent;
 	} else if (event.originalEvent.changedTouches) {
-		event = event.originalEvent.changedTouches[0];
+		evt = event.originalEvent.changedTouches[0];
 	} else {
 		evt = event;
 	}
