@@ -82,7 +82,7 @@
         evt = event;
     }
     simulatedEvent = document.createEvent('MouseEvents');
-    coord = fixTouch(touch);
+    coord = fixTouch(evt);
 
     // Initialize the simulated mouse event using the touch event's coordinates
     simulatedEvent.initMouseEvent(
